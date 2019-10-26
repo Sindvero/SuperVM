@@ -1,0 +1,6 @@
+# ignore object file
+*.o
+
+#ignore vscode file
+
+.vscode/*
