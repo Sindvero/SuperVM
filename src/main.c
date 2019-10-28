@@ -60,3 +60,109 @@ typedef enum {
 
 uint16_t memory[UINT16_MAX];
 uint16_t reg[COUNT];
+
+uint16_t sign_extend(uint16_t x, int bit_count) {
+    if ((x >> (bit_count - 1)) & 1) {
+        x |= (0xFFFF << bit_count);
+    }
+
+    return x;
+}
+
+void update_flags(uint16_t r) {
+    if (reg[r] == 0) {
+        reg[COND] = Z;
+    }
+
+    else if (reg[r] >> 15){
+        reg[COND] = N;
+    }
+
+    else {
+        reg[COND] = P;
+    }
+}
+
+int main(int argc, const char* argv[]){
+    //Load argument
+
+
+    //Setup
+
+
+    //PC starting position
+    enum{PC_start = 0x3000};
+    reg[PC] = PC_start;
+
+
+    int running = 1;
+    while (running) {
+
+        //Fetch instructions
+        uint16_t instructions = mem_read(reg[PC]++);
+        uint16_t OP = instructions >> 12;
+
+
+        switch (OP)
+        {
+        case ADD:
+            break;
+        
+        case AND:
+            break;
+        
+        case NOT:
+            break;
+        
+        case BR:
+            break;
+        
+        case LD:
+            break;
+        
+        case ST:
+            break;
+        
+        case JPR:
+            break;
+        
+        case LDR:
+            break;
+        
+        case STR:
+            break;
+        
+        case LDI:
+            break;
+        
+        case STI:
+            break;
+        
+        case JMP:
+            break;
+        
+        case LEA:
+            break;
+        
+        case TRAP:
+            break;
+
+        case RES:
+        case RTI:
+        default:
+            abort();
+            break;
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
+}
