@@ -138,6 +138,20 @@ int main(int argc, const char* argv[]){
             break;
         
         case AND:
+
+            r0 = (instructions >> 9) & 0x07;
+            r1 = (instructions >> 6) & 0x07;
+            immediate_flag = (instructions >> 5) & 0x01;
+
+            if (immediate_flag) {
+                immediate5 = sign_extend(instructions & 0x1F, 5);
+                reg[r0] = reg[r1] & immediate5;
+            } else {
+                r2 = instructions & 0x07;
+                reg[r0] = reg[r1] & reg[r2];
+            }
+
+            update_flags(r0);
             break;
         
         case NOT:
