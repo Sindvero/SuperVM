@@ -113,6 +113,8 @@ int main(int argc, const char* argv[]){
         uint16_t r2 = instructions & 0x07;
         //PC offset
         uint16_t pc_offset = sign_extend(instructions & 0x1FF, 9);
+        //condition flag
+        uint16_t cond_flag = (instructions >> 9) & 0x07;
 
 
         switch (OP)
@@ -144,41 +146,79 @@ int main(int argc, const char* argv[]){
             break;
         
         case NOT:
+
             reg[r0] = -reg[r1];
+
             update_flags(r0);
             break;
         
         case BR:
+
+            if (cond_flag & reg[COND]) {
+                reg[PC] += pc_offset;
+            }
+
             break;
         
         case LD:
+
+            reg[r0] = mem_read(reg[PC] + pc_offset);
+            update_flags(r0);
             break;
         
         case ST:
+
+            mem_write(reg[PC] + pc_offset, reg[r0]);
             break;
         
         case JPR:
+            uint16_t long_pc_offset = sign_extend(instructions & 0x7FF, 11);
+            uint16_t long_flag = (instructions >> 11) & 1;
+
+            reg[R7] = reg[PC];
+
+            if (long_flag) {
+                reg[PC] +=  long_pc_offset;
+            } else {
+                reg[PC] = reg[r1];
+            }
             break;
         
         case LDR:
+
+            uint16_t offset = sign_extend(instructions & 0x3F, 6);
+            reg[r0] = mem_read(reg[r1] + offset);
+            update_flags(r0);
             break;
         
         case STR:
+
+            uint16_t offset = sign_extend(instructions & 0x3F, 6);
+            mem_write(reg[r1] + offset, reg[r0]);
             break;
         
         case LDI:
+
             reg[r0] = mem_read( mem_read(reg[PC] + pc_offset) );
             update_flags(r0);
 
             break;
         
         case STI:
+
+            mem_write(mem_read(reg[PC] + pc_offset), reg[r0]);
             break;
         
         case JMP:
+
+            reg[PC] = reg[r1];
+
             break;
         
         case LEA:
+
+            reg[r0] = reg[PC] + pc_offset;
+            update_flags(r0);
             break;
         
         case TRAP:
