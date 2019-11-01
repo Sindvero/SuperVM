@@ -118,13 +118,6 @@ int main(int argc, const char* argv[]){
         switch (OP)
         {
         case ADD:
-            //DR
-            r0 = (instructions >> 9) & 0x07;
-            //SR1
-            r1 = (instructions >> 6) & 0x07;
-            //flag immediate mode ?
-            immediate_flag = (instructions >> 5) & 0x01;
-
             if (immediate_flag) {
                 immediate5 = sign_extend(instructions & 0x1F, 5);
                 reg[r0] = reg[r1] + immediate5;
@@ -139,10 +132,6 @@ int main(int argc, const char* argv[]){
         
         case AND:
 
-            r0 = (instructions >> 9) & 0x07;
-            r1 = (instructions >> 6) & 0x07;
-            immediate_flag = (instructions >> 5) & 0x01;
-
             if (immediate_flag) {
                 immediate5 = sign_extend(instructions & 0x1F, 5);
                 reg[r0] = reg[r1] & immediate5;
@@ -155,6 +144,8 @@ int main(int argc, const char* argv[]){
             break;
         
         case NOT:
+            reg[r0] = -reg[r1];
+            update_flags(r0);
             break;
         
         case BR:
@@ -176,10 +167,6 @@ int main(int argc, const char* argv[]){
             break;
         
         case LDI:
-
-            r0 = (instructions >> 9) & 0x07;
-            //PC offset
-            pc_offset = sign_extend(instructions & 0x1FF, 9);
             reg[r0] = mem_read( mem_read(reg[PC] + pc_offset) );
             update_flags(r0);
 
