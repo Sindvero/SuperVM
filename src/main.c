@@ -57,6 +57,12 @@ typedef enum {
     COUNT
 } Register;
 
+enum {
+    MR_KBSR = 0xFE00, //Keyboard status
+    MR_KBDR = 0xFE02  //Keyboard data
+};
+
+
 
 uint16_t memory[UINT16_MAX];
 uint16_t reg[COUNT];
@@ -67,6 +73,25 @@ uint16_t sign_extend(uint16_t x, int bit_count) {
     }
 
     return x;
+}
+
+void mem_write(uint16_t address, uint16_t val) {
+    memory[address] = val;
+}
+
+uint16_t mem_read(uint16_t address) {
+
+    if (address == MR_KBSR){
+        if (check_key()) {
+            memory[MR_KBSR] = (1 << 15);
+            memory[MR_KBDR] = getchar();
+        } else {
+            memory[MR_KBSR] = 0;
+        }
+        
+    }
+
+    return memory[address];
 }
 
 void update_flags(uint16_t r) {
