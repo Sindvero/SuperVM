@@ -102,22 +102,34 @@ int main(int argc, const char* argv[]){
         uint16_t instructions = mem_read(reg[PC]++);
         uint16_t OP = instructions >> 12;
 
+        //DR
+        uint16_t r0 = (instructions >> 9) & 0x07;
+        //SR1
+        uint16_t r1 = (instructions >> 6) & 0x07;
+        //flag immediate mode ?
+        uint16_t immediate_flag = (instructions >> 5) & 0x01;
+        uint16_t immediate5 = sign_extend(instructions & 0x1F, 5);
+
+        uint16_t r2 = instructions & 0x07;
+        //PC offset
+        uint16_t pc_offset = sign_extend(instructions & 0x1FF, 9);
+
 
         switch (OP)
         {
         case ADD:
             //DR
-            uint16_t r0 = (instructions >> 9) & 0x07;
+            r0 = (instructions >> 9) & 0x07;
             //SR1
-            uint16_t r1 = (instructions >> 6) & 0x07;
+            r1 = (instructions >> 6) & 0x07;
             //flag immediate mode ?
-            uint16_t immediate_flag = (instructions >> 5) & 0x01;
+            immediate_flag = (instructions >> 5) & 0x01;
 
             if (immediate_flag) {
-                uint16_t immediate5 = sign_extend(instructions & 0x1F, 5);
+                immediate5 = sign_extend(instructions & 0x1F, 5);
                 reg[r0] = reg[r1] + immediate5;
             } else {
-                uint16_t r2 = instructions & 0x07;
+                r2 = instructions & 0x07;
                 reg[r0] = reg[r1] + reg[r2];
             }
 
@@ -151,9 +163,9 @@ int main(int argc, const char* argv[]){
         
         case LDI:
 
-            uint16_t r0 = (instructions >> 9) & 0x07;
+            r0 = (instructions >> 9) & 0x07;
             //PC offset
-            uint16_t pc_offset = sign_extend(instructions & 0x1FF, 9);
+            pc_offset = sign_extend(instructions & 0x1FF, 9);
             reg[r0] = mem_read( mem_read(reg[PC] + pc_offset) );
             update_flags(r0);
 
