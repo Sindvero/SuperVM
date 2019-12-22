@@ -17,5 +17,5 @@ make
 
 You should see an executable main.
 
-Then, you just need to find a object file to run it (*e.g.* 2048.obj)
+Then, you just need to find an object file to run it (*e.g.* 2048.obj)
 
