@@ -1,10 +1,12 @@
-SRC=main.c
-CC_FLAGS=-Wall -Wextra -g -std=cll
-CC=gcc
-RM=rm
+SRC = $(wildcard *.c)
+BIN = $(patsubst %.c,%,$(SRC))
+CFLAGS = -Wall -Wextra -g
 
-all:
-	${CC} ${SRC} ${CC_FLAGS} -o supervm
+
+all: $(BIN)
 
 clean:
-	${RM} -f *.o
+	rm -f $(BIN)
+	rm -f *.o
+
+.PHONY: all clean

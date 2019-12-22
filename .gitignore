@@ -1,6 +1,10 @@
 # ignore object file
 *.o
-
+src/main
 #ignore vscode file
 
 .vscode/*
+
+#ignore apps file
+*.obj
+
